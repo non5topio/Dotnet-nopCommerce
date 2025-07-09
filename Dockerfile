@@ -14,6 +14,9 @@ COPY ./src/Presentation/Nop.Web/*.csproj ./Presentation/Nop.Web/
 COPY ./src/Presentation/Nop.Web.Framework/*.csproj ./Presentation/Nop.Web.Framework/
 COPY ./src/Tests/Nop.Tests/*.csproj ./Tests/Nop.Tests/
 
+# Copy ALL plugin project files
+COPY ./src/Plugins/*/*.csproj ./Plugins/*/
+
 # Copy any other test projects if they exist
 COPY ./src/Tests/ ./Tests/
 
