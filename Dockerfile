@@ -1,5 +1,5 @@
 # create the build and test instance 
-FROM mcr.microsoft.com/dotnet/sdk:9.0.302-alpine AS test
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
 
 WORKDIR /app
 
