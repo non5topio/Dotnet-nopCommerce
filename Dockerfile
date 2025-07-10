@@ -1,7 +1,10 @@
 # create the build and test instance 
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
+FROM mcr.microsoft.com/dotnet/sdk:9.0.302-alpine AS test
 
 WORKDIR /app
+
+# First copy global.json to ensure the right SDK version is used
+COPY ./global.json ./
 
 # Copy solution file
 COPY ./src/NopCommerce.sln ./
@@ -13,6 +16,10 @@ COPY ./src/Libraries/Nop.Services/*.csproj ./Libraries/Nop.Services/
 COPY ./src/Presentation/Nop.Web/*.csproj ./Presentation/Nop.Web/
 COPY ./src/Presentation/Nop.Web.Framework/*.csproj ./Presentation/Nop.Web.Framework/
 COPY ./src/Tests/Nop.Tests/*.csproj ./Tests/Nop.Tests/
+
+# Copy project.json, Directory.Build.props, and other common MSBuild files
+COPY ./src/*.props ./
+COPY ./src/Directory.Build.props ./
 
 # Copy ALL plugin project files
 COPY ./src/Plugins/*/*.csproj ./Plugins/*/
@@ -27,8 +34,8 @@ COPY ./src/Tests/ ./Tests/
 RUN mkdir -p Plugins
 COPY ./src/Plugins/ ./Plugins/
 
-# Restore dependencies
-RUN dotnet restore
+# Restore dependencies with specific parameters to handle framework issues
+RUN dotnet restore --disable-parallel --force
 
 # Copy the rest of the source code
 COPY ./src/ ./
