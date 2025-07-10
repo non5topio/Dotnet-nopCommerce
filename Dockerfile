@@ -1,14 +1,12 @@
-# create the build and test instance 
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
 
 WORKDIR /app
-# First copy global.json to ensure the right SDK version is used
-COPY ./global.json ./
 
-# Copy solution file
+# Copy global.json and solution file
+COPY ./global.json ./
 COPY ./src/NopCommerce.sln ./
 
-# Copy all project files first (for better Docker layer caching)
+# Copy project files for better Docker layer caching
 COPY ./src/Libraries/Nop.Core/*.csproj ./Libraries/Nop.Core/
 COPY ./src/Libraries/Nop.Data/*.csproj ./Libraries/Nop.Data/
 COPY ./src/Libraries/Nop.Services/*.csproj ./Libraries/Nop.Services/
@@ -16,52 +14,37 @@ COPY ./src/Presentation/Nop.Web/*.csproj ./Presentation/Nop.Web/
 COPY ./src/Presentation/Nop.Web.Framework/*.csproj ./Presentation/Nop.Web.Framework/
 COPY ./src/Tests/Nop.Tests/*.csproj ./Tests/Nop.Tests/
 
-# Copy project.json, Directory.Build.props, and other common MSBuild files
+# Copy MSBuild files
 COPY ./src/*.props ./
 COPY ./src/Directory.Build.props ./
 
-# Copy ALL plugin project files
+# Copy plugin project files
 COPY ./src/Plugins/*/*.csproj ./Plugins/*/
 
-# Copy the test config file
+# Copy test config
 COPY ./test-gen-config.json ./
 
-# Copy any other test projects if they exist
-COPY ./src/Tests/ ./Tests/
-
-# Create plugin directory structure
-RUN mkdir -p Plugins
-COPY ./src/Plugins/ ./Plugins/
-
-# Restore dependencies with specific parameters to handle framework issues
+# Restore dependencies
 RUN dotnet restore --disable-parallel --force
 
 # Copy the rest of the source code
 COPY ./src/ ./
 
-# Install ReportGenerator tool for coverage reports
+# Install required tools and packages
 RUN dotnet tool install -g dotnet-reportgenerator-globaltool
-
-# Add dotnet tools to PATH
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Install required packages for nopCommerce
-RUN apk add --no-cache icu-libs icu-data-full
+# Install Alpine packages for nopCommerce
+RUN apk add --no-cache icu-libs icu-data-full libc-dev tzdata curl
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# Install additional packages that might be needed for tests
+# Install optional graphics packages (suppress errors if not available)
 RUN apk add tiff --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted || true
 RUN apk add libgdiplus --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted || true
-RUN apk add libc-dev tzdata --no-cache
 
 # Create necessary directories
-RUN mkdir -p App_Data/DataProtectionKeys logs
-
-# Set permissions
+RUN mkdir -p App_Data/DataProtectionKeys logs TestResults
 RUN chmod 775 App_Data App_Data/DataProtectionKeys logs
 
-# Build the solution in release mode
-RUN dotnet build --configuration Release
-
-# Run tests with coverage
+# Remove the build step - dotnet test will build automatically
 CMD ["sh", "-c", "echo .NET VERSION && dotnet --version && echo RUNNING TESTS && dotnet test --configuration Release --logger trx --collect:'XPlat Code Coverage' --results-directory ./TestResults"]
