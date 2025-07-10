@@ -1,5 +1,5 @@
-# create the test instance 
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
+# create the build and test instance 
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
 WORKDIR /app
 
@@ -19,6 +19,10 @@ COPY ./src/Plugins/*/*.csproj ./Plugins/*/
 
 # Copy any other test projects if they exist
 COPY ./src/Tests/ ./Tests/
+
+# Create plugin directory structure
+RUN mkdir -p Plugins
+COPY ./src/Plugins/ ./Plugins/
 
 # Restore dependencies
 RUN dotnet restore
@@ -47,5 +51,30 @@ RUN mkdir -p App_Data/DataProtectionKeys logs
 # Set permissions
 RUN chmod 775 App_Data App_Data/DataProtectionKeys logs
 
+# Build the solution in release mode
+RUN dotnet build --configuration Release
+
 # Run tests with coverage
-CMD ["bash", "-c", "echo .NET VERSION && dotnet --version && echo RUNNING TESTS && dotnet test --logger trx --collect:'XPlat Code Coverage' --results-directory ./TestResults"]
+CMD ["sh", "-c", "echo .NET VERSION && dotnet --version && echo RUNNING TESTS && dotnet test --configuration Release --logger trx --collect:'XPlat Code Coverage' --results-directory ./TestResults"]
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
+
+WORKDIR /app
+
+# Copy build output from build stage
+COPY --from=build /app/Presentation/Nop.Web/bin/Release/net9.0/publish/ ./
+
+# Install required packages for nopCommerce
+RUN apk add --no-cache icu-libs icu-data-full
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Create necessary directories for data persistence
+RUN mkdir -p App_Data/DataProtectionKeys logs
+RUN chmod 775 App_Data App_Data/DataProtectionKeys logs
+
+# Expose port 80
+EXPOSE 80
+
+# Set entrypoint
+ENTRYPOINT ["dotnet", "Nop.Web.dll"]
