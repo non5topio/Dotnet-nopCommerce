@@ -2,7 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
 
 WORKDIR /app
-
 # First copy global.json to ensure the right SDK version is used
 COPY ./global.json ./
 
