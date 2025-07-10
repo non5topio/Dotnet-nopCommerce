@@ -12,7 +12,7 @@
     ],
     "source-test-file-paths": [
       {
-        "source-file-path": "src/Libraries/Nop.Services/Tax/TaxPluginManager.cs",
+        "source-file-path": "src/Libraries/Nop.Services/Tax/TaxService.cs",
         "test-file-path": "src/Tests/Nop.Tests/Nop.Services.Tests/Tax/TaxServiceTests.cs"
       }
     ],
