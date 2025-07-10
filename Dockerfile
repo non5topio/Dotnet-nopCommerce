@@ -1,5 +1,5 @@
 # create the build and test instance 
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
 
 WORKDIR /app
 
@@ -16,6 +16,9 @@ COPY ./src/Tests/Nop.Tests/*.csproj ./Tests/Nop.Tests/
 
 # Copy ALL plugin project files
 COPY ./src/Plugins/*/*.csproj ./Plugins/*/
+
+# Copy the test config file
+COPY ./test-gen-config.json ./
 
 # Copy any other test projects if they exist
 COPY ./src/Tests/ ./Tests/
@@ -36,7 +39,7 @@ RUN dotnet tool install -g dotnet-reportgenerator-globaltool
 # Add dotnet tools to PATH
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Install required packages for nopCommerce (similar to runtime stage)
+# Install required packages for nopCommerce
 RUN apk add --no-cache icu-libs icu-data-full
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
@@ -56,25 +59,3 @@ RUN dotnet build --configuration Release
 
 # Run tests with coverage
 CMD ["sh", "-c", "echo .NET VERSION && dotnet --version && echo RUNNING TESTS && dotnet test --configuration Release --logger trx --collect:'XPlat Code Coverage' --results-directory ./TestResults"]
-
-# Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
-
-WORKDIR /app
-
-# Copy build output from build stage
-COPY --from=build /app/Presentation/Nop.Web/bin/Release/net9.0/publish/ ./
-
-# Install required packages for nopCommerce
-RUN apk add --no-cache icu-libs icu-data-full
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-
-# Create necessary directories for data persistence
-RUN mkdir -p App_Data/DataProtectionKeys logs
-RUN chmod 775 App_Data App_Data/DataProtectionKeys logs
-
-# Expose port 80
-EXPOSE 80
-
-# Set entrypoint
-ENTRYPOINT ["dotnet", "Nop.Web.dll"]
