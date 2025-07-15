@@ -2,11 +2,15 @@
 # Change from Alpine to Ubuntu/Debian based image
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS test
 WORKDIR /app
+
 # First copy global.json to ensure the right SDK version is used
 COPY ./global.json ./
 
-# Copy solution file
+# Copy solution file and build configuration
 COPY ./src/NopCommerce.sln ./
+COPY ./src/Directory.Build.props ./
+COPY ./src/.deployment ./
+COPY ./src/deploy.cmd ./
 
 # Copy all project files first (for better Docker layer caching)
 COPY ./src/Libraries/Nop.Core/*.csproj ./Libraries/Nop.Core/
@@ -16,22 +20,15 @@ COPY ./src/Presentation/Nop.Web/*.csproj ./Presentation/Nop.Web/
 COPY ./src/Presentation/Nop.Web.Framework/*.csproj ./Presentation/Nop.Web.Framework/
 COPY ./src/Tests/Nop.Tests/*.csproj ./Tests/Nop.Tests/
 
-# Copy project.json, Directory.Build.props, and other common MSBuild files
-COPY ./src/*.props ./
-COPY ./src/Directory.Build.props ./
+# Copy ALL plugin project files (create directory structure first)
+RUN find /app -name "Plugins" -type d -exec mkdir -p {} \; 2>/dev/null || true
+COPY ./src/Plugins/ ./Plugins/
 
-# Copy ALL plugin project files
-COPY ./src/Plugins/*/*.csproj ./Plugins/*/
+# Copy build tools and configuration
+COPY ./src/Build/ ./Build/
 
 # Copy the test config file
 COPY ./test-gen-config.json ./
-
-# Copy any other test projects if they exist
-COPY ./src/Tests/ ./Tests/
-
-# Create plugin directory structure
-RUN mkdir -p Plugins
-COPY ./src/Plugins/ ./Plugins/
 
 # Restore dependencies with specific parameters to handle framework issues
 RUN dotnet restore --disable-parallel --force
@@ -55,8 +52,8 @@ RUN apt-get update && apt-get install -y \
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# Create necessary directories
-RUN mkdir -p App_Data/DataProtectionKeys logs
+# Create necessary directories early in the process
+RUN mkdir -p App_Data/DataProtectionKeys logs Presentation/Nop.Web/Plugins
 
 # Set permissions
 RUN chmod 775 App_Data App_Data/DataProtectionKeys logs
