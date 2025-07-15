@@ -31,6 +31,11 @@ COPY ./src/Build/ ./Build/
 COPY ./test-gen-config.json ./
 
 # Restore dependencies with specific parameters to handle framework issues
+COPY ./src/ ./src/
+COPY ./global.json ./
+COPY ./test-gen-config.json ./
+
+WORKDIR /app/src
 RUN dotnet restore --disable-parallel --force
 
 # Copy the rest of the source code
