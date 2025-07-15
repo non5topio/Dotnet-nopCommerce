@@ -11,11 +11,16 @@ RUN apt-get update && apt-get install -y \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project files for dependency restore
+# Copy project files for dependency restore - preserve directory structure
 COPY ./global.json ./
-COPY ./src/*.sln ./src/
-COPY ./src/**/*.csproj ./src/
+COPY ./src/NopCommerce.sln ./src/
 COPY ./src/Directory.Build.props ./src/
+
+# Copy all project files while preserving directory structure
+COPY ./src/Libraries/ ./src/Libraries/
+COPY ./src/Plugins/ ./src/Plugins/
+COPY ./src/Presentation/ ./src/Presentation/
+COPY ./src/Tests/ ./src/Tests/
 
 # Restore dependencies
 RUN dotnet restore ./src/NopCommerce.sln --disable-parallel --force
