@@ -46,13 +46,14 @@ RUN dotnet tool install -g dotnet-reportgenerator-globaltool
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # Install required packages for nopCommerce
-RUN apk add --no-cache icu-libs icu-data-full
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libgdiplus \
+    libc6-dev \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install additional packages that might be needed for tests
-RUN apk add tiff --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted || true
-RUN apk add libgdiplus --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted || true
-RUN apk add libc-dev tzdata --no-cache
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 # Create necessary directories
 RUN mkdir -p App_Data/DataProtectionKeys logs
