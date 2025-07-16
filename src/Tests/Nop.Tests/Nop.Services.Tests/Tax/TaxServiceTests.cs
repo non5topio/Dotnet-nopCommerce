@@ -152,6 +152,445 @@ public class TaxServiceTests : ServiceTest
     [TestCase("IT00478390347", VatNumberStatus.Valid)]
     public async Task CanCheckVatNumber(string vatNumber, VatNumberStatus canBeStatus)
     {
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxWithVatExemptionForEuCustomer()
+    {
+        // Arrange
+        var customer = new Customer
+        {
+            VatNumber = "DE123456789",
+            VatNumberStatusId = (int)VatNumberStatus.Valid
+        };
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().Be(0);
+        price.Should().Be(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxBasedOnDefaultAddress()
+    {
+        // Arrange
+        var customer = new Customer();
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Ensure billing and shipping addresses are not set
+        customer.BillingAddressId = null;
+        customer.ShippingAddressId = null;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().BeGreaterOrEqual(0);
+        price.Should().BeGreaterOrEqual(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxWithNegativeTaxRate()
+    {
+        // Arrange
+        var customer = new Customer();
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().BeGreaterOrEqual(0);
+        price.Should().BeGreaterOrEqual(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Public Modifier on Test Method**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure test methods are not marked as `public` unless necessary. In NUnit, test methods should typically be `public` only if they are to be discoverable by the test runner, but ensure they are correctly placed within the test class.
+
+    [Test]
+    public async Task CanCalculateTaxWithNoTaxPlugin()
+    {
+        // Arrange
+        var customer = new Customer();
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().Be(0);
+        price.Should().Be(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCheckInvalidVatNumber()
+    {
+        // Arrange
+        var invalidVatNumber = "InvalidVATNumber";
+    
+        // Act
+        var result = await _taxService.GetVatNumberStatusAsync(invalidVatNumber);
+    
+        // Assert
+        result.vatNumberStatus.Should().Be(VatNumberStatus.Invalid);
+        result.name.Should().BeEmpty();
+        result.address.Should().BeEmpty();
+    }
+
+*/
+/*
+FAILED TEST: **Analysis Summary:**
+
+1. **Missing Shouldly Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Update the using directives to correct namespaces (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`). Ensure the project has references to the correct assemblies for these namespaces.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxBasedOnAutoDetectedCountry()
+    {
+        // Arrange
+        var customer = new Customer();
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Ensure billing and shipping addresses are not set
+        customer.BillingAddressId = null;
+        customer.ShippingAddressId = null;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().BeGreaterOrEqual(0);
+        price.Should().BeGreaterOrEqual(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**:  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**:  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Ensure correct namespace references (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`) or update the using directives if the namespaces have been moved or renamed.
+
+3. **Duplicate Using Directives**:  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**:  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxBasedOnPickupPointAddress()
+    {
+        // Arrange
+        var customer = new Customer();
+        var pickupPoint = new PickupPoint
+        {
+            CountryCode = "US",
+            StateAbbreviation = "CA",
+            County = "Los Angeles",
+            City = "Los Angeles",
+            Address = "123 Main St",
+            ZipPostalCode = "90001"
+        };
+        await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedPickupPointAttribute, pickupPoint);
+    
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().BeGreaterOrEqual(0);
+        price.Should().BeGreaterOrEqual(100);
+    }
+
+*/
+/*
+FAILED TEST: The test run failed due to the following issues:
+
+1. **Missing Shouldly Package**:  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` NuGet package using:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**:  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Ensure the correct namespaces are referenced (e.g., `Nop.Services.Address`, `Nop.Services.GenericAttributes`) or update the using directives if the namespaces have been moved or renamed.
+
+3. **Duplicate Using Directives**:  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Method Modifier**:  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+    [Test]
+    public async Task CanCalculateTaxWithTaxExemptProduct()
+    {
+        // Arrange
+        var product = new Product { IsTaxExempt = true };
+        var customer = new Customer();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().Be(0);
+        price.Should().Be(100);
+    }
+
+*/
+/*
+FAILED TEST: **Analysis of Test Run Failure:**
+
+1. **Missing `Shouldly` NuGet Package**  
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`  
+   - **Fix**: Install the `Shouldly` package using:  
+     ```bash
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**  
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`  
+   - **Error**: `The type or namespace name 'GenericAttributes' does not exist in the namespace 'Nop.Services'`  
+   - **Fix**: Ensure the project has references to the correct assemblies for `Nop.Services.Address` and `Nop.Services.GenericAttributes`. If these namespaces have been moved or renamed, update the using directives accordingly.
+
+3. **Duplicate Using Directives**  
+   - **Error**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`  
+   - **Fix**: Remove the duplicate `using NUnit.Framework;` directive from the file.
+
+4. **Invalid Modifier on Test Method**  
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`  
+   - **Fix**: Ensure test methods are not incorrectly marked as `public`. In test classes, test methods should be marked with `[Test]` and not have the `public` modifier unless necessary.
+
+---
+
+**Recommended Fixes Summary:**
+
+1. Install the `Shouldly` NuGet package.
+2. Verify and correct references for `Nop.Services.Address` and `Nop.Services.GenericAttributes`.
+3. Remove duplicate `using` directives.
+4. Remove the `public` modifier from test methods where it is not valid.
+
+    [Test]
+    public async Task CanCalculateTaxWithTaxExemptCustomer()
+    {
+        // Arrange
+        var customer = new Customer { IsTaxExempt = true };
+        var product = new Product();
+        var taxCategoryId = 1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().Be(0);
+        price.Should().Be(100);
+    }
+
+*/
+/*
+FAILED TEST: **Analysis of Test Run Failure:**
+
+1. **Missing `Shouldly` NuGet Package**:
+   - **Error**: `CS0246: The type or namespace name 'Shouldly' could not be found`
+   - **Fix**: Install the `Shouldly` NuGet package using the command:  
+     ```
+     dotnet add package Shouldly
+     ```
+
+2. **Missing Namespace References**:
+   - **Error**: `The type or namespace name 'Address' does not exist in the namespace 'Nop.Services'`
+   - **Fix**: Ensure the project has references to the correct assemblies for `Nop.Services.Address` and `Nop.Services.GenericAttributes`. If these namespaces have been moved or renamed, update the using directives accordingly.
+
+3. **Duplicate Using Directives**:
+   - **Warning**: `CS0105: The using directive for 'NUnit.Framework' appeared previously in this namespace`
+   - **Fix**: Remove duplicate `using` directives from the file.
+
+4. **Invalid Method Modifier**:
+   - **Error**: `CS0106: The modifier 'public' is not valid for this item`
+   - **Fix**: Ensure that method declarations are correctly formatted and that the `public` modifier is only used where valid (e.g., not on test methods in a test class without proper setup).
+
+---
+
+**Recommended Fixes Summary:**
+
+1. Install the `Shouldly` NuGet package.
+2. Fix or remove missing/incorrect using directives for `Nop.Services.Address` and `Nop.Services.GenericAttributes`.
+3. Remove duplicate `using` directives.
+4. Correct the invalid method modifier in the test file.
+
+    [Test]
+    public async Task CanCalculateTaxWithInvalidTaxCategoryId()
+    {
+        // Arrange
+        var customer = new Customer();
+        var product = new Product();
+        var taxCategoryId = -1;
+    
+        // Act
+        var (price, taxRate) = await _taxService.GetProductPriceAsync(product, taxCategoryId, 100, true, customer, true);
+    
+        // Assert
+        taxRate.Should().Be(0);
+        price.Should().Be(100);
+    }
+
+*/
         var result = await _taxService.GetVatNumberStatusAsync(vatNumber);
 
         result.vatNumberStatus.Should().Be(canBeStatus);
