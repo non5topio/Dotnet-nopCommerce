@@ -1,17 +1,9 @@
 # create the build and test instance 
-# Change from Alpine to Ubuntu/Debian based image
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS base
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS test
+
 WORKDIR /app
 
-# Install system dependencies first
-RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libgdiplus \
-    libc6-dev \
-    tzdata \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy project files for dependency restore - preserve directory structure
+# Copy global.json to ensure the right SDK version is used
 COPY ./global.json ./
 
 # Copy the entire source code
