@@ -44,5 +44,5 @@ RUN dotnet build ./src/NopCommerce.sln --configuration Release
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# Run specific TaxServiceTests with coverage (keeping the new focused approach)
 CMD ["sh", "-c", "time dotnet test ./src/Tests/Nop.Tests/Nop.Tests.csproj --filter \"FullyQualifiedName~TaxServiceTests\" --collect:'XPlat Code Coverage' --results-directory ./TestResults --verbosity minimal && find ./TestResults -name 'coverage.cobertura.xml' -exec cp {} ./TestResults/coverage.cobertura.xml \\; && echo 'Tests completed with coverage'"]
+
