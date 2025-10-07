@@ -13,10 +13,10 @@
     "source-test-file-paths": [
       {
         "source-file-path": "src/Libraries/Nop.Services/Tax/TaxService.cs",
-        "test-file-path": "src/Tests/Nop.Tests/Nop.Services.Tests/Tax/TaxServiceTests.cs"
+        "test-file-path": "src/Tests/Nop.Tests/Nop.Services.Tests/Tax/TaxServiceTests.cs",
+        "test-command": "dotnet test ./src/Tests/Nop.Tests/Nop.Tests.csproj --filter \"FullyQualifiedName~TaxServiceTests\" --collect:'XPlat Code Coverage' --results-directory ./TestResults --verbosity minimal && find ./TestResults -name 'coverage.cobertura.xml' -exec cp {} ./TestResults/coverage.cobertura.xml \\; && echo 'Tests completed with coverage'"
       }
     ],
-    "test-command": "dotnet test ./src/Tests/Nop.Tests/Nop.Tests.csproj --filter \"FullyQualifiedName~TaxServiceTests\" --collect:'XPlat Code Coverage' --results-directory ./TestResults --verbosity minimal && find ./TestResults -name 'coverage.cobertura.xml' -exec cp {} ./TestResults/coverage.cobertura.xml \\; && echo 'Tests completed with coverage'",
     "coverage-type": "cobertura",
     "code-coverage-report-path": "TestResults/*/coverage.cobertura.xml",
     "desired-coverage": 85,
