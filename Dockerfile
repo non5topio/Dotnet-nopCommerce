@@ -1,55 +1,48 @@
-# create the build instance 
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
-
-WORKDIR /src                                                                    
-COPY ./src ./
-
-# build solution   
-RUN dotnet build NopCommerce.sln --no-incremental -c Release
-
-# publish project
-WORKDIR /src/Presentation/Nop.Web   
-RUN dotnet publish Nop.Web.csproj -c Release -o /app/published
-
-WORKDIR /app/published
-
-RUN mkdir logs bin
-
-RUN chmod 775 App_Data \
-              App_Data/DataProtectionKeys \
-              bin \
-              logs \
-              Plugins \
-              wwwroot/bundles \
-              wwwroot/db_backups \
-              wwwroot/files/exportimport \
-              wwwroot/icons \
-              wwwroot/images \
-              wwwroot/images/thumbs \
-              wwwroot/images/uploaded \
-			  wwwroot/sitemaps
-
-# create the runtime instance 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime 
-
-# add globalization support
-RUN apk add --no-cache icu-libs icu-data-full
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-
-# installs required packages
-RUN apk add tiff --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted
-RUN apk add libgdiplus --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted
-RUN apk add libc-dev tzdata --no-cache
-
-# copy entrypoint script
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod 755 /entrypoint.sh
-
+# create the build and test instance 
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS base
 WORKDIR /app
 
-COPY --from=build /app/published .
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libgdiplus \
+    libc6-dev \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
 
-ENV ASPNETCORE_URLS=http://+:80
-EXPOSE 80
-                            
-ENTRYPOINT "/entrypoint.sh"
+# Copy project files for dependency restore - preserve directory structure
+COPY ./global.json ./
+COPY ./src/NopCommerce.sln ./src/
+COPY ./src/Directory.Build.props ./src/
+
+# Copy all project files while preserving directory structure
+COPY ./src/Libraries/ ./src/Libraries/
+COPY ./src/Plugins/ ./src/Plugins/
+COPY ./src/Presentation/ ./src/Presentation/
+COPY ./src/Tests/ ./src/Tests/
+
+# Restore dependencies
+RUN dotnet restore ./src/NopCommerce.sln --disable-parallel --force
+
+# Install global tools
+RUN dotnet tool install -g dotnet-reportgenerator-globaltool
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+FROM base AS test
+# Copy everything else
+COPY . .
+
+# Copy the test config file
+COPY ./test-gen-config.json ./
+
+# Create required files and directories
+RUN touch ./test-gen.env && \
+    mkdir -p ./src/App_Data/DataProtectionKeys ./src/logs ./src/Presentation/Nop.Web/Plugins
+
+# Build the solution
+RUN dotnet build ./src/NopCommerce.sln --configuration Release
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+CMD ["sh", "-c", "time dotnet test ./src/Tests/Nop.Tests/Nop.Tests.csproj --filter \"FullyQualifiedName~TaxServiceTests\" --collect:'XPlat Code Coverage' --results-directory ./TestResults --verbosity minimal && find ./TestResults -name 'coverage.cobertura.xml' -exec cp {} ./TestResults/coverage.cobertura.xml \\; && echo 'Tests completed with coverage'"]
+
